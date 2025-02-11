@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
@@ -15,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +30,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,15 +39,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.ihff.fuelelectro.viewmodel.RecordViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navController: NavController, viewModel: RecordViewModel = hiltViewModel()) {
+    // Слушаем Flow allRecords с помощью collectAsState
+    val records by viewModel.allRecords.collectAsState(initial = emptyList())
+
+    // Состояние для отслеживания прокрутки
+    val scrollState = rememberScrollState()
+
     Scaffold(
         modifier = Modifier
             .systemBarsPadding(),
@@ -69,19 +81,34 @@ fun HomeScreen(navController: NavController) {
             )
         },
         floatingActionButton = {
-            AddNewRecordFab(onClick = {
-                navController.navigate("add_new_record_screen")
-            })
+            // Скрытие FAB при прокрутке
+            val fabVisible = scrollState.value == 0
+            if (fabVisible) {
+                AddNewRecordFab(onClick = {
+                    navController.navigate("add_new_record_screen")
+                })
+            }
         }
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(8.dp)
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxWidth()
+                .verticalScroll(scrollState), // Прокручиваемая область
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(text = "Записей нет")
+            if (records.isEmpty()) {
+                Text(text = "Записей пока нет")
+            } else {
+                // TODO: Отображаем список записей
+                records.reversed().forEach {
+                    Text(text = "Запись: $it")
+                    Spacer(modifier = Modifier.height(4.dp))
+                    HorizontalDivider()
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
+            }
         }
     }
 }
@@ -96,87 +123,8 @@ fun AddNewRecordFab(onClick: () -> Unit) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DatePickerBottomSheet() {
-    var showBottomSheet by remember { mutableStateOf(false) }
-    var selectedDate by remember { mutableStateOf<Long?>(null) }
-
-    Button(onClick = { showBottomSheet = true }) {
-        Text("Выбрать дату")
-    }
-
-    // Показываем BottomSheet при активации showBottomSheet
-    if (showBottomSheet) {
-        ModalBottomSheet(
-            onDismissRequest = { showBottomSheet = false },
-            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-        ) {
-            DatePickerBottomSheetContent(
-                onDismiss = { showBottomSheet = false },
-                onDateSelected = { date ->
-                    selectedDate = date
-                    showBottomSheet = false
-                }
-            )
-        }
-    }
-
-    // Отображаем выбранную дату, если она есть
-    Text(
-        text = selectedDate?.let { convertMillisToDate(it) } ?: "Дата не выбрана",
-        style = MaterialTheme.typography.bodyLarge,
-        modifier = Modifier.padding(16.dp)
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DatePickerBottomSheetContent(
-    onDismiss: () -> Unit,
-    onDateSelected: (Long) -> Unit
-) {
-    val datePickerState = rememberDatePickerState()
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        // Календарь
-        DatePicker(
-            state = datePickerState,
-            showModeToggle = false,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
-        ) {
-            // Кнопка "Отмена"
-            TextButton(onClick = onDismiss) {
-                Text("Отмена")
-            }
-            // Кнопка "ОК"
-            TextButton(onClick = {
-                datePickerState.selectedDateMillis?.let { onDateSelected(it) }
-            }) {
-                Text("ОК")
-            }
-        }
-    }
-}
 
 fun convertMillisToDate(millis: Long): String {
     val formatter = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
     return formatter.format(Date(millis))
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun DatePickerFieldPreview() {
-    HomeScreen(navController = rememberNavController())
 }
