@@ -5,20 +5,30 @@ import com.ihff.fuelelectro.data.model.Record
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class RecordRepository @Inject constructor(private val recordDao: RecordDao) {
-    // Метод для получения всех записей
-    val allRecords: Flow<List<Record>> = recordDao.getAllRecords()
+interface RecordRepository {
+    fun getAllRecords(): Flow<List<Record>>
+    suspend fun addRecord(record: Record)
+    suspend fun deleteRecord(record: Record)
+    suspend fun updateRecord(record: Record)
+    suspend fun getRecordById(recordId: Int): Record?
+}
 
-    suspend fun addRecord(record: Record){
+class RecordRepositoryImpl @Inject constructor(private val recordDao: RecordDao) : RecordRepository {
+    override fun getAllRecords(): Flow<List<Record>> = recordDao.getAllRecords()
+
+    override suspend fun addRecord(record: Record) {
         recordDao.addRecord(record)
     }
 
-    suspend fun deleteRecord(record: Record){
+    override suspend fun deleteRecord(record: Record) {
         recordDao.deleteRecord(record)
     }
 
-    suspend fun updateRecord(record: Record){
+    override suspend fun updateRecord(record: Record) {
         recordDao.updateRecord(record)
     }
 
+    override suspend fun getRecordById(recordId: Int): Record? {
+        return recordDao.getRecordById(recordId)
+    }
 }
