@@ -9,6 +9,7 @@ import com.ihff.fuelelectro.data.model.Record
 import com.ihff.fuelelectro.data.repository.CarRepository
 import com.ihff.fuelelectro.data.repository.CarRepositoryImpl
 import com.ihff.fuelelectro.data.repository.RecordRepository
+import com.ihff.fuelelectro.data.repository.RecordRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -59,7 +60,7 @@ object AppDatabaseModule {
     // Предоставляем репозиторий для работы с Record
     @Provides
     fun provideRecordRepository(recordDao: RecordDao): RecordRepository {
-        return RecordRepository(recordDao)
+        return RecordRepositoryImpl(recordDao)
     }
 
 }
