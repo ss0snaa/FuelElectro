@@ -22,4 +22,7 @@ interface RecordDao {
 
     @Update
     suspend fun updateRecord(record: Record)
+
+    @Query("SELECT * FROM records WHERE id = :recordId")
+    suspend fun getRecordById(recordId: Int): Record?
 }
