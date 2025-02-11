@@ -31,7 +31,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,20 +39,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.ihff.fuelelectro.viewmodel.AddNewRecordViewModel
+import com.ihff.fuelelectro.viewmodel.RecordViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddNewRecordScreen(
     navController: NavController,
-    viewModel: AddNewRecordViewModel = hiltViewModel()
+    viewModel: RecordViewModel = hiltViewModel()
 ) {
     Scaffold(
         modifier = Modifier
@@ -96,21 +92,19 @@ fun AddNewRecordScreen(
                 .padding(8.dp)
                 .verticalScroll(rememberScrollState())
         ) {
+            TypeOfWorksShift(viewModel = viewModel)
+            Spacer(modifier = Modifier.size(16.dp))
             PreviousWorkShiftData(viewModel = viewModel)
             Spacer(modifier = Modifier.size(16.dp))
-            NowWorkShiftData()
-            SaveCancelButtons(navController)
+            NowWorkShiftData(viewModel = viewModel)
+            SaveCancelButtons(navController, viewModel = viewModel)
         }
     }
 }
 
 @Composable
-fun NowWorkShiftData() {
-    var nowWorkShiftDistance1 by remember { mutableStateOf("") }
-    var nowWorkShiftDistance2 by remember { mutableStateOf("") }
-    var nowWorkShiftDistance3 by remember { mutableStateOf("") }
-    var nowWorkShiftOdometer by remember { mutableStateOf("") }
-
+fun NowWorkShiftData(viewModel: RecordViewModel) {
+    val inputFields by viewModel.inputFields.collectAsState()
 
     ElevatedCard(
         elevation = CardDefaults.cardElevation(
@@ -129,8 +123,8 @@ fun NowWorkShiftData() {
 
         OutlinedTextField(
             label = { Text("Пройдено по грунту (1), км") },
-            value = nowWorkShiftDistance1,
-            onValueChange = { nowWorkShiftDistance1 = it },
+            value = inputFields["nowWSD1"] ?: "",  // Используем строку (может быть пустой)
+            onValueChange = { viewModel.updateField("nowWSD1", it) },
             singleLine = true,
             leadingIcon = {
                 Icon(Icons.Default.Route, contentDescription = "Редактировать")
@@ -143,8 +137,8 @@ fun NowWorkShiftData() {
 
         OutlinedTextField(
             label = { Text("Пройдено по асфальту (3), км") },
-            value = nowWorkShiftDistance3,
-            onValueChange = { nowWorkShiftDistance3 = it },
+            value = inputFields["nowWSD3"] ?: "",  // Используем строку (может быть пустой)
+            onValueChange = { viewModel.updateField("nowWSD3", it) },
             singleLine = true,
             leadingIcon = {
                 Icon(Icons.Default.Route, contentDescription = "Редактировать")
@@ -157,8 +151,8 @@ fun NowWorkShiftData() {
 
         OutlinedTextField(
             label = { Text("Пройдено под линией (2), км") },
-            value = nowWorkShiftDistance2,
-            onValueChange = { nowWorkShiftDistance2 = it },
+            value = inputFields["nowWSD2"] ?: "",  // Используем строку (может быть пустой)
+            onValueChange = { viewModel.updateField("nowWSD2", it) },
             singleLine = true,
             leadingIcon = {
                 Icon(Icons.Default.Route, contentDescription = "Редактировать")
@@ -171,8 +165,8 @@ fun NowWorkShiftData() {
 
         OutlinedTextField(
             label = { Text("Показания одометра, км") },
-            value = nowWorkShiftOdometer,
-            onValueChange = { nowWorkShiftOdometer = it },
+            value = inputFields["nowWSOdometer"] ?: "",
+            onValueChange = { viewModel.updateField("nowWSOdometer", it) },
             singleLine = true,
             leadingIcon = {
                 Icon(Icons.Default.Route, contentDescription = "Редактировать")
@@ -183,134 +177,116 @@ fun NowWorkShiftData() {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
 
-        CheckBoxVariants()
+        CheckBoxVariants(viewModel = viewModel)
 
         Spacer(modifier = Modifier.size(16.dp))
     }
 }
 
 @Composable
-fun CheckBoxVariants() {
-    var isCheckedAzs by remember { mutableStateOf(false) }
-    var isChecked2Percent by remember { mutableStateOf(false) }
-    var isCheckedCoefficient by remember { mutableStateOf(false) }
-
-    var filledPetrol by remember { mutableStateOf("") }
-    var filledLpg by remember { mutableStateOf("") }
+fun CheckBoxVariants(viewModel: RecordViewModel) {
+    val shiftData by viewModel.shiftData.collectAsState()
+    val inputFields by viewModel.inputFields.collectAsState()
 
     Column(
         modifier = Modifier
             .padding(horizontal = 16.dp)
             .fillMaxWidth(),
     ) {
+        // Чекбокс АЗС
         Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(
-                checked = isCheckedAzs,
-                onCheckedChange = { isCheckedAzs = it }
+                checked = shiftData.cbxAzs,
+                onCheckedChange = { viewModel.updateCheckbox("cbxAzs", it) }
             )
-            Text(
-                "АЗС (был ли на заправке)",
-            )
+            Text("АЗС (был ли на заправке)")
         }
 
-        if (isCheckedAzs) {
+        if (shiftData.cbxAzs) {
             Column {
                 OutlinedTextField(
                     label = { Text("Заправлено бензина, л") },
-                    value = filledPetrol,
-                    onValueChange = { filledPetrol = it },
+                    value = inputFields["azsPetrol"] ?: "",
+                    onValueChange = { viewModel.updateField("azsPetrol", it) },
                     singleLine = true,
-                    leadingIcon = {
-                        Icon(Icons.Default.LocalGasStation, contentDescription = "Редактировать")
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                    leadingIcon = { Icon(Icons.Default.LocalGasStation, contentDescription = "Редактировать") },
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                 )
 
                 OutlinedTextField(
                     label = { Text("Заправлено СУГ, л") },
-                    value = filledLpg,
-                    onValueChange = { filledLpg = it },
+                    value = inputFields["azsLpg"] ?: "",
+                    onValueChange = { viewModel.updateField("azsLpg", it) },
                     singleLine = true,
-                    leadingIcon = {
-                        Icon(Icons.Default.LocalGasStation, contentDescription = "Редактировать")
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                    leadingIcon = { Icon(Icons.Default.LocalGasStation, contentDescription = "Редактировать") },
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                 )
             }
         }
 
+        // Чекбокс "2% (зимняя норма заводки)"
         Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(
-                checked = isChecked2Percent,
-                onCheckedChange = { isChecked2Percent = it }
+                checked = shiftData.cbx2Percent,
+                onCheckedChange = { viewModel.updateCheckbox("cbx2Percent", it) }
             )
-            Text(
-                "2% (зимняя норма заводки)",
-            )
+            Text("2% (зимняя норма заводки)")
         }
 
+        // Чекбокс "Коэффициент 1,04 (зимний коэффициент расхода СУГ)"
         Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(
-                checked = isCheckedCoefficient,
-                onCheckedChange = { isCheckedCoefficient = it }
+                checked = shiftData.cbxCoefficient,
+                onCheckedChange = { viewModel.updateCheckbox("cbxCoefficient", it) }
             )
-            Text(
-                "Коэфициент 1,04 (зимний коэффициент расхода СУГ)",
-            )
+            Text("Коэффициент 1,04 (зимний коэффициент расхода СУГ)")
         }
     }
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
-fun PreviousWorkShiftData(viewModel: AddNewRecordViewModel) {
-    val prevWorkShiftOdometer by viewModel.prevWSOdometer.collectAsState()
-    val prevWorkShiftPetrol by viewModel.prevWSPetrol.collectAsState()
-    val prevWorkShiftLpg by viewModel.prevWSLpg.collectAsState()
+fun PreviousWorkShiftData(viewModel: RecordViewModel) {
+    val inputFields by viewModel.inputFields.collectAsState()
 
     ElevatedCard(
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 6.dp
-        ),
-        modifier = Modifier
-            .fillMaxWidth()
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        modifier = Modifier.fillMaxWidth()
     ) {
         Text(
             text = "Данные прошлой смены",
-            modifier = Modifier
-                .padding(16.dp),
+            modifier = Modifier.padding(16.dp),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.titleLarge
         )
 
+        // Поле для одометра
         OutlinedTextField(
             label = { Text("Показания одометра") },
-            value = prevWorkShiftOdometer,
-            onValueChange = { viewModel.updatePrevWSOdometer(it) },
+            value = inputFields["prevWSOdometer"] ?: "",
+            onValueChange = { viewModel.updateField("prevWSOdometer", it) },
             singleLine = true,
-            leadingIcon = {
-                Icon(Icons.Default.Speed, contentDescription = "Редактировать")
-            },
+            leadingIcon = { Icon(Icons.Default.Speed, contentDescription = "Редактировать") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
 
+        // Поле для остатка бензина
         OutlinedTextField(
             label = { Text("Остаток бензина") },
-            value = prevWorkShiftPetrol,
-            onValueChange = { viewModel.updatePrevWSPetrol(it) },
+            value = inputFields["prevWSPetrol"] ?: "",
+            onValueChange = { viewModel.updateField("prevWSPetrol", it) },
             singleLine = true,
             leadingIcon = {
-                Icon(Icons.Default.LocalGasStation, contentDescription = "Редактировать")
+                Icon(
+                    Icons.Default.LocalGasStation,
+                    contentDescription = "Редактировать"
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -318,17 +294,21 @@ fun PreviousWorkShiftData(viewModel: AddNewRecordViewModel) {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
 
+        // Поле для остатка СУГ
         OutlinedTextField(
             label = { Text("Остаток СУГ") },
-            value = prevWorkShiftLpg,
-            onValueChange = { viewModel.updatePrevWSLpg(it) },
+            value = inputFields["prevWSLpg"] ?: "",
+            onValueChange = { viewModel.updateField("prevWSLpg", it) },
             singleLine = true,
+            leadingIcon = {
+                Icon(
+                    Icons.Default.LocalGasStation,
+                    contentDescription = "Редактировать"
+                )
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            leadingIcon = {
-                Icon(Icons.Default.LocalGasStation, contentDescription = "Редактировать")
-            },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
 
@@ -336,15 +316,70 @@ fun PreviousWorkShiftData(viewModel: AddNewRecordViewModel) {
     }
 }
 
+
 @Composable
-fun SaveCancelButtons(navController: NavController) {
+fun TypeOfWorksShift(viewModel: RecordViewModel) {
+    val inputFields by viewModel.inputFields.collectAsState()
+    val selectedTypeOfWork = inputFields["typeOfWork"] ?: ""
+
+    ElevatedCard(
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 6.dp
+        ),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = "Тип смены",
+            modifier = Modifier
+                .padding(16.dp),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleLarge
+        )
+
+        Row(
+            modifier = Modifier,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Дневная смена
+            Checkbox(
+                checked = selectedTypeOfWork == "D",
+                onCheckedChange = {
+                    if (selectedTypeOfWork != "D") {
+                        viewModel.updateField("typeOfWork", "D")
+                    } else {
+                        viewModel.updateField("typeOfWork", "") // Снимаем выбор
+                    }
+                }
+            )
+            Text("Дневная")
+
+            // Ночная смена
+            Checkbox(
+                checked = selectedTypeOfWork == "N",
+                onCheckedChange = {
+                    if (selectedTypeOfWork != "N") {
+                        viewModel.updateField("typeOfWork", "N")
+                    } else {
+                        viewModel.updateField("typeOfWork", "") // Снимаем выбор
+                    }
+                }
+            )
+            Text("Ночная")
+        }
+    }
+}
+
+
+@Composable
+fun SaveCancelButtons(navController: NavController, viewModel: RecordViewModel) {
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {
         Button(
-            enabled = false,
+            enabled = true, // TODO: Проверить, можно ли сохранить
             onClick = {
-
+                viewModel.saveRecord()
+                navController.popBackStack() // Возвращаемся назад после сохранения
             },
             modifier = Modifier
                 .padding(16.dp)
@@ -366,11 +401,4 @@ fun SaveCancelButtons(navController: NavController) {
             Text("Отменить".uppercase())
         }
     }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun AddNewRecordScreenPreview() {
-    AddNewRecordScreen(navController = rememberNavController())
 }
