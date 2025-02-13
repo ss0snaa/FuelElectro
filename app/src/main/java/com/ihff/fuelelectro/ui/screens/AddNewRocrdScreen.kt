@@ -238,10 +238,25 @@ fun CheckBoxVariants(viewModel: RecordViewModel) {
         // Чекбокс "Коэффициент 1,04 (зимний коэффициент расхода СУГ)"
         Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(
-                checked = shiftData.cbxCoefficient,
-                onCheckedChange = { viewModel.updateCheckbox("cbxCoefficient", it) }
+                checked = shiftData.cbxCoefficient104,
+                onCheckedChange = {
+                    viewModel.updateCheckbox("cbxCoefficient104", it)
+                    if (it) viewModel.updateCheckbox("cbxCoefficient108", false)
+                }
             )
             Text("Коэффициент 1,04 (зимний коэффициент расхода СУГ)")
+        }
+
+        // Чекбокс "Коэффициент 1,08 (зимний коэффициент расхода СУГ)"
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(
+                checked = shiftData.cbxCoefficient108,
+                onCheckedChange = {
+                    viewModel.updateCheckbox("cbxCoefficient108", it)
+                    if (it) viewModel.updateCheckbox("cbxCoefficient104", false)
+                }
+            )
+            Text("Коэффициент 1,08 (зимний коэффициент расхода СУГ)")
         }
     }
 }

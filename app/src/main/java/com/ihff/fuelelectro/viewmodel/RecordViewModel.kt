@@ -35,7 +35,8 @@ class RecordViewModel @Inject constructor(
 
             cbxAzs = _shiftData.value.cbxAzs,  // Чекбоксы обновляются отдельно
             cbx2Percent = _shiftData.value.cbx2Percent,
-            cbxCoefficient = _shiftData.value.cbxCoefficient,
+            cbxCoefficient104 = _shiftData.value.cbxCoefficient104,
+            cbxCoefficient108 = _shiftData.value.cbxCoefficient108,
 
             typeOfWork = _inputFields.value["typeOfWork"] ?: "",
 
@@ -57,7 +58,8 @@ class RecordViewModel @Inject constructor(
         _shiftData.value = when (fieldName) {
             "cbxAzs" -> _shiftData.value.copy(cbxAzs = isChecked)
             "cbx2Percent" -> _shiftData.value.copy(cbx2Percent = isChecked)
-            "cbxCoefficient" -> _shiftData.value.copy(cbxCoefficient = isChecked)
+            "cbxCoefficient104" -> _shiftData.value.copy(cbxCoefficient104 = isChecked)
+            "cbxCoefficient108" -> _shiftData.value.copy(cbxCoefficient108 = isChecked)
             else -> _shiftData.value
         }
     }
