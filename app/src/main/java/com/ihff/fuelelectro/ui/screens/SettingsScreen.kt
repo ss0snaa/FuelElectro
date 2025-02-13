@@ -120,7 +120,6 @@ fun SettingsScreen(navController: NavController, viewModel: SettingsViewModel = 
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectCarDialog(
     cars: List<Car>,
