@@ -9,6 +9,7 @@ import com.ihff.fuelelectro.ui.screens.AddNewRecordScreen
 import com.ihff.fuelelectro.ui.screens.EditCarScreen
 import com.ihff.fuelelectro.ui.screens.HomeScreen
 import com.ihff.fuelelectro.ui.screens.SettingsScreen
+import com.ihff.fuelelectro.ui.screens.ShiftDataScreen
 
 @Composable
 fun AppNavGraph(navController: NavHostController) {
@@ -33,6 +34,10 @@ fun AppNavGraph(navController: NavHostController) {
         composable("edit_car_screen/{carId}") { backStackEntry ->
             val carId = backStackEntry.arguments?.getString("carId")?.toIntOrNull()
             EditCarScreen(navController, carId)
+        }
+
+        composable("shift_data_screen") { backStackEntry ->
+            ShiftDataScreen(navController)
         }
     }
 }
