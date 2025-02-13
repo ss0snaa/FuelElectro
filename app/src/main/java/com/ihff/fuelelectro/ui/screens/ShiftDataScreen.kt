@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -24,7 +24,11 @@ import com.ihff.fuelelectro.viewmodel.ShiftDataViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShiftDataScreen(navController: NavController, viewModel: ShiftDataViewModel = hiltViewModel()) {
+fun ShiftDataScreen(
+    navController: NavController,
+    viewModel: ShiftDataViewModel = hiltViewModel(),
+    recordId: Long?
+) {
     Scaffold(
         modifier = Modifier
             .systemBarsPadding(),
@@ -42,6 +46,15 @@ fun ShiftDataScreen(navController: NavController, viewModel: ShiftDataViewModel 
                         )
                     }
                 },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Назад",
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary,
@@ -49,12 +62,13 @@ fun ShiftDataScreen(navController: NavController, viewModel: ShiftDataViewModel 
             )
         }
     ) { innerPadding ->
-        LazyColumn (
+        Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(8.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
         ) {
+            Text("Итог по смене", style = MaterialTheme.typography.titleLarge)
         }
     }
 }

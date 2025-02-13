@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ShiftDataViewModel @Inject constructor(
-    private val userPreferencesDataStore: UserPreferencesDataStore
+    private val userPreferencesDataStore: UserPreferencesDataStore,
 ): ViewModel() {
 
 }
