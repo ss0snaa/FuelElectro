@@ -36,8 +36,9 @@ fun AppNavGraph(navController: NavHostController) {
             EditCarScreen(navController, carId)
         }
 
-        composable("shift_data_screen") { backStackEntry ->
-            ShiftDataScreen(navController)
+        composable("shift_data_screen/{recordId}") { backStackEntry ->
+            val recordId = backStackEntry.arguments?.getString("recordId")?.toLongOrNull()
+            ShiftDataScreen(navController = navController, recordId = recordId)
         }
     }
 }
