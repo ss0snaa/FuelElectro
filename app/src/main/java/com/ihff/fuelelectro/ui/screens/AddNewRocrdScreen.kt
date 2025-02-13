@@ -390,7 +390,7 @@ fun SaveCancelButtons(navController: NavController, viewModel: RecordViewModel) 
             enabled = true, // TODO: Проверить, можно ли сохранить
             onClick = {
                 viewModel.saveRecord()
-                navController.popBackStack() // Возвращаемся назад после сохранения
+                navController.popBackStack() // TODO: Добавить переход на экран смены
             },
             modifier = Modifier
                 .padding(16.dp)
