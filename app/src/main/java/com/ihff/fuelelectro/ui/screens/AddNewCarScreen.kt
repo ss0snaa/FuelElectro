@@ -107,6 +107,13 @@ fun AddNewCarScreen(navController: NavController, viewModel: CarViewModel = hilt
                     label = "2%",
                     modifier = Modifier.weight(1f)
                 )
+
+                CustomNumberField(
+                    value = inputFields["normaZavodki4"] ?: "",
+                    onValueChange = { viewModel.updateField("normaZavodki4", it) },
+                    label = "4%",
+                    modifier = Modifier.weight(1f)
+                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))

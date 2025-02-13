@@ -10,6 +10,7 @@ data class Car(
     val licensePlate: String = "",
     val normaZavodki08: Double? = 0.0,
     val normaZavodki2: Double? = 0.0,
+    val normaZavodki4: Double? = 0.0,
     val rashodSug1: Double? = 0.0,
     val rashodSug2: Double? = 0.0,
     val rashodSug3: Double? = 0.0,

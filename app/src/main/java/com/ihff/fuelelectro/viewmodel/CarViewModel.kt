@@ -38,6 +38,7 @@ class CarViewModel @Inject constructor(
                 "licensePlate" to car.licensePlate,
                 "normaZavodki08" to car.normaZavodki08.toString(),
                 "normaZavodki2" to car.normaZavodki2.toString(),
+                "normaZavodki4" to car.normaZavodki4.toString(),
                 "rashodSug1" to car.rashodSug1.toString(),
                 "rashodSug2" to car.rashodSug2.toString(),
                 "rashodSug3" to car.rashodSug3.toString(),
@@ -56,14 +57,14 @@ class CarViewModel @Inject constructor(
 
     // Обновление временного текстового значения (не конвертируем в Double сразу!)
     fun updateField(fieldName: String, value: String) {
-        _inputFields.value = _inputFields.value.toMutableMap().also { it[fieldName] = value }
+        _inputFields.value = _inputFields.value.toMutableMap().toMap().plus(fieldName to value)
 
-        // Синхронизируем обновление данных в _car (когда обновляются поля формы)
         _car.value = _car.value.copy(
             model = _inputFields.value["model"] ?: "",
             licensePlate = _inputFields.value["licensePlate"] ?: "",
             normaZavodki08 = parseNumber(_inputFields.value["normaZavodki08"] ?: ""),
             normaZavodki2 = parseNumber(_inputFields.value["normaZavodki2"] ?: ""),
+            normaZavodki4 = parseNumber(_inputFields.value["normaZavodki4"] ?: ""),
             rashodSug1 = parseNumber(_inputFields.value["rashodSug1"] ?: ""),
             rashodSug2 = parseNumber(_inputFields.value["rashodSug2"] ?: ""),
             rashodSug3 = parseNumber(_inputFields.value["rashodSug3"] ?: ""),
@@ -72,6 +73,7 @@ class CarViewModel @Inject constructor(
             rashodBenz3 = parseNumber(_inputFields.value["rashodBenz3"] ?: "")
         )
     }
+
 
     // Конвертация строки в число при сохранении
     private fun parseNumber(input: String): Double {
@@ -86,6 +88,7 @@ class CarViewModel @Inject constructor(
             val updatedCar = _car.value.copy(
                 normaZavodki08 = parseNumber(inputValues["normaZavodki08"] ?: ""),
                 normaZavodki2 = parseNumber(inputValues["normaZavodki2"] ?: ""),
+                normaZavodki4 = parseNumber(inputValues["normaZavodki4"] ?: ""),
                 rashodSug1 = parseNumber(inputValues["rashodSug1"] ?: ""),
                 rashodSug2 = parseNumber(inputValues["rashodSug2"] ?: ""),
                 rashodSug3 = parseNumber(inputValues["rashodSug3"] ?: ""),
