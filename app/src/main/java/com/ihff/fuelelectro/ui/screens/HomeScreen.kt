@@ -46,7 +46,7 @@ import java.util.Locale
 @Composable
 fun HomeScreen(navController: NavController, viewModel: RecordViewModel = hiltViewModel()) {
     // Слушаем Flow allRecords с помощью collectAsState
-    val records by viewModel.allRecords.collectAsState(initial = emptyList())
+    val records by viewModel.records.collectAsState(initial = emptyList())
 
     // Состояние для отслеживания прокрутки в LazyColumn
     val scrollState = rememberLazyListState()
@@ -109,7 +109,9 @@ fun HomeScreen(navController: NavController, viewModel: RecordViewModel = hiltVi
                             Text("${record.id}")
                         },
                         trailingContent = {
-                            IconButton(onClick = {}) {
+                            IconButton(onClick = {
+                                navController.navigate("shift_data_screen/${record.id}")
+                            }) {
                                 if (record.typeOfWork == "D") {
                                     Icon(Icons.Default.LightMode, contentDescription = "")
                                 } else {
