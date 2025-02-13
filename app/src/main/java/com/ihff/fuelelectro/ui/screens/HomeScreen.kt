@@ -1,5 +1,6 @@
 package com.ihff.fuelelectro.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,12 +11,20 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.ModeNight
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -78,7 +87,7 @@ fun HomeScreen(navController: NavController, viewModel: RecordViewModel = hiltVi
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(8.dp)
+                .padding(horizontal = 16.dp)
                 .fillMaxWidth()
         ) {
             // Заголовок
@@ -90,11 +99,30 @@ fun HomeScreen(navController: NavController, viewModel: RecordViewModel = hiltVi
             LazyColumn(
                 state = scrollState,  // Используем scrollState для прокрутки
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(4.dp) // добавляем расстояние между элементами
             ) {
                 items(records.reversed()) { record ->
-                    Text(text = "Запись: $record")
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+                    ListItem(
+                        headlineContent = {
+                            Text("Запись: ${convertMillisToDate(record.dateRecord)}") },
+                        supportingContent = { Text("Secondary text") },
+                        leadingContent = {
+                            Text("${record.id}")
+                        },
+                        trailingContent = {
+                            IconButton(onClick = {}) {
+                                if (record.typeOfWork == "D") {
+                                    Icon(Icons.Default.LightMode, contentDescription = "")
+                                } else {
+                                    Icon(Icons.Default.DarkMode, contentDescription = "")
+                                }
+                            }
+                        },
+                        modifier = Modifier
+                            .clickable {
+                                navController.navigate("shift_data_screen/${record.id}")
+                            }
+                    )
+                    HorizontalDivider()
                 }
             }
         }
@@ -110,7 +138,6 @@ fun AddNewRecordFab(onClick: () -> Unit) {
         Text("Добавить запись")
     }
 }
-
 
 fun convertMillisToDate(millis: Long): String {
     val formatter = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
