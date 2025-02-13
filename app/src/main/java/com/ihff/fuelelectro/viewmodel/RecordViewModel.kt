@@ -74,12 +74,6 @@ class RecordViewModel @Inject constructor(
         return input?.toIntOrNull() ?: 0
     }
 
-    // Очистка данных
-    fun clearShiftData() {
-        _shiftData.value = Record()  // Очистка объекта
-        _inputFields.value = emptyMap()  // Очистка введенных данных
-    }
-
     // Функция сохранения записи в базу данных
     fun saveRecord() {
         viewModelScope.launch {
