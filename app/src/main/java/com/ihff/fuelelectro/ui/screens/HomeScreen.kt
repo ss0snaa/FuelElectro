@@ -103,8 +103,8 @@ fun HomeScreen(navController: NavController, viewModel: RecordViewModel = hiltVi
                 items(records.reversed()) { record ->
                     ListItem(
                         headlineContent = {
-                            Text("Запись: ${convertMillisToDate(record.dateRecord)}") },
-                        supportingContent = { Text("Secondary text") },
+                            Text("Запись от: ${convertMillisToDate(record.dateRecord)}") },
+                        supportingContent = { Text("Текущий километраж: ${record.nowWSOdometer}") },
                         leadingContent = {
                             Text("${record.id}")
                         },

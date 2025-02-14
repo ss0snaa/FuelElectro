@@ -21,6 +21,7 @@ data class Record(
 
     val cbxAzs: Boolean = false,
     val cbx2Percent: Boolean = false,
+    val cbx4Percent: Boolean = false,
     val cbxCoefficient104: Boolean = false,
     val cbxCoefficient108: Boolean = false,
 
