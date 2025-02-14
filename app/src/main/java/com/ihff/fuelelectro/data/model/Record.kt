@@ -9,7 +9,7 @@ data class Record(
 
     val dateRecord: Long = System.currentTimeMillis(),
 
-    val typeOfWork: String = "D",
+    val typeOfWork: WorkType = WorkType.DAY,
 
     val nowWSD1: Int = 0,
     val nowWSD2: Int = 0,
