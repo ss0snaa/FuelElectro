@@ -10,7 +10,7 @@ interface RecordRepository {
     suspend fun addRecord(record: Record)
     suspend fun deleteRecord(record: Record)
     suspend fun updateRecord(record: Record)
-    suspend fun getRecordById(recordId: Int): Record?
+    suspend fun getRecordById(recordId: Long): Record?
 }
 
 class RecordRepositoryImpl @Inject constructor(private val recordDao: RecordDao) : RecordRepository {
@@ -28,7 +28,7 @@ class RecordRepositoryImpl @Inject constructor(private val recordDao: RecordDao)
         recordDao.updateRecord(record)
     }
 
-    override suspend fun getRecordById(recordId: Int): Record? {
+    override suspend fun getRecordById(recordId: Long): Record? {
         return recordDao.getRecordById(recordId)
     }
 }
