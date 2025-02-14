@@ -91,8 +91,8 @@ fun AddNewRecordScreen(
             TypeOfWorksShift(viewModel = viewModel)
             Spacer(modifier = Modifier.size(16.dp))
             PreviousWorkShiftData(viewModel = viewModel)
-//            Spacer(modifier = Modifier.size(16.dp))
-//            NowWorkShiftData(viewModel = viewModel)
+            Spacer(modifier = Modifier.size(16.dp))
+            NowWorkShiftData(viewModel = viewModel)
             SaveCancelButtons(navController, viewModel = viewModel)
         }
     }
@@ -150,168 +150,194 @@ fun TypeOfWorksShift(viewModel: RecordViewModel) {
 }
 
 
-/**
-
 @Composable
 fun NowWorkShiftData(viewModel: RecordViewModel) {
-val inputFields by viewModel.inputFields.collectAsState()
+    val nowWSD1 by viewModel.nowWSD1.collectAsState()
+    val nowWSD2 by viewModel.nowWSD2.collectAsState()
+    val nowWSD3 by viewModel.nowWSD3.collectAsState()
+    val nowWSOdometer by viewModel.nowWSDOdometer.collectAsState()
 
-ElevatedCard(
-elevation = CardDefaults.cardElevation(
-defaultElevation = 6.dp
-),
-modifier = Modifier
-.fillMaxWidth()
-) {
-Text(
-text = "Данные текущей смены",
-modifier = Modifier
-.padding(16.dp),
-textAlign = TextAlign.Center,
-style = MaterialTheme.typography.titleLarge
-)
+    ElevatedCard(
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 6.dp
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Text(
+            text = "Данные текущей смены",
+            modifier = Modifier
+                .padding(16.dp),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleLarge
+        )
 
-OutlinedTextField(
-label = { Text("Пройдено по грунту (1), км") },
-value = inputFields["nowWSD1"] ?: "",  // Используем строку (может быть пустой)
-onValueChange = { viewModel.updateField("nowWSD1", it) },
-singleLine = true,
-leadingIcon = {
-Icon(Icons.Default.Route, contentDescription = "Редактировать")
-},
-modifier = Modifier
-.fillMaxWidth()
-.padding(horizontal = 16.dp),
-keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-)
+        OutlinedTextField(
+            label = { Text("Пройдено по грунту (1), км") },
+            value = nowWSD1,
+            onValueChange = { viewModel.updateNowWSD1(it) },
+            singleLine = true,
+            leadingIcon = {
+                Icon(Icons.Default.Route, contentDescription = "Редактировать")
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+        )
 
-OutlinedTextField(
-label = { Text("Пройдено по асфальту (3), км") },
-value = inputFields["nowWSD3"] ?: "",  // Используем строку (может быть пустой)
-onValueChange = { viewModel.updateField("nowWSD3", it) },
-singleLine = true,
-leadingIcon = {
-Icon(Icons.Default.Route, contentDescription = "Редактировать")
-},
-modifier = Modifier
-.fillMaxWidth()
-.padding(horizontal = 16.dp),
-keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-)
+        OutlinedTextField(
+            label = { Text("Пройдено по асфальту (3), км") },
+            value = nowWSD3,
+            onValueChange = { viewModel.updateNowWSD3(it) },
+            singleLine = true,
+            leadingIcon = {
+                Icon(Icons.Default.Route, contentDescription = "Редактировать")
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+        )
 
-OutlinedTextField(
-label = { Text("Пройдено под линией (2), км") },
-value = inputFields["nowWSD2"] ?: "",  // Используем строку (может быть пустой)
-onValueChange = { viewModel.updateField("nowWSD2", it) },
-singleLine = true,
-leadingIcon = {
-Icon(Icons.Default.Route, contentDescription = "Редактировать")
-},
-modifier = Modifier
-.fillMaxWidth()
-.padding(horizontal = 16.dp),
-keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-)
+        OutlinedTextField(
+            label = { Text("Пройдено под линией (2), км") },
+            value = nowWSD2,
+            onValueChange = { viewModel.updateNowWSD2(it) },
+            singleLine = true,
+            leadingIcon = {
+                Icon(Icons.Default.Route, contentDescription = "Редактировать")
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+        )
 
-OutlinedTextField(
-label = { Text("Показания одометра, км") },
-value = inputFields["nowWSOdometer"] ?: "",
-onValueChange = { viewModel.updateField("nowWSOdometer", it) },
-singleLine = true,
-leadingIcon = {
-Icon(Icons.Default.Route, contentDescription = "Редактировать")
-},
-modifier = Modifier
-.fillMaxWidth()
-.padding(horizontal = 16.dp),
-keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-)
+        OutlinedTextField(
+            label = { Text("Показания одометра, км") },
+            value = nowWSOdometer,
+            onValueChange = { viewModel.updateNowWSDOdometer(it) },
+            singleLine = true,
+            leadingIcon = {
+                Icon(Icons.Default.Route, contentDescription = "Редактировать")
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+        )
 
-CheckBoxVariants(viewModel = viewModel)
+        CheckBoxVariants(viewModel = viewModel)
 
-Spacer(modifier = Modifier.size(16.dp))
-}
+        Spacer(modifier = Modifier.size(16.dp))
+    }
 }
 
 @Composable
 fun CheckBoxVariants(viewModel: RecordViewModel) {
-val shiftData by viewModel.shiftData.collectAsState()
-val inputFields by viewModel.inputFields.collectAsState()
+    val cbxAzs by viewModel.cbxAzs.collectAsState()
+    val azsPetrol by viewModel.azsPetrol.collectAsState()
+    val azsLpg by viewModel.azsLpg.collectAsState()
+    val cbx2Percent by viewModel.cbx2Percent.collectAsState()
+    val cbx4Percent by viewModel.cbx4Percent.collectAsState()
+    val cbxCoefficient104 by viewModel.cbxCoefficient104.collectAsState()
+    val cbxCoefficient108 by viewModel.cbxCoefficient108.collectAsState()
 
-Column(
-modifier = Modifier
-.padding(horizontal = 16.dp)
-.fillMaxWidth(),
-) {
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .fillMaxWidth(),
+    ) {
 // Чекбокс АЗС
-Row(verticalAlignment = Alignment.CenterVertically) {
-Checkbox(
-checked = shiftData.cbxAzs,
-onCheckedChange = { viewModel.updateCheckbox("cbxAzs", it) }
-)
-Text("АЗС (был ли на заправке)")
-}
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(
+                checked = cbxAzs,
+                onCheckedChange = { viewModel.updateCbxAzs(it) }
+            )
+            Text("АЗС (был ли на заправке)")
+        }
 
-if (shiftData.cbxAzs) {
-Column {
-OutlinedTextField(
-label = { Text("Заправлено бензина, л") },
-value = inputFields["azsPetrol"] ?: "",
-onValueChange = { viewModel.updateField("azsPetrol", it) },
-singleLine = true,
-leadingIcon = { Icon(Icons.Default.LocalGasStation, contentDescription = "Редактировать") },
-modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-)
+        if (cbxAzs) {
+            Column {
+                OutlinedTextField(
+                    label = { Text("Заправлено бензина, л") },
+                    value =  azsPetrol,
+                    onValueChange = { viewModel.updateAzsPetrol(it)},
+                    singleLine = true,
+                    leadingIcon = {
+                        Icon(
+                            Icons.Default.LocalGasStation,
+                            contentDescription = "Редактировать"
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                )
 
-OutlinedTextField(
-label = { Text("Заправлено СУГ, л") },
-value = inputFields["azsLpg"] ?: "",
-onValueChange = { viewModel.updateField("azsLpg", it) },
-singleLine = true,
-leadingIcon = { Icon(Icons.Default.LocalGasStation, contentDescription = "Редактировать") },
-modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-)
-}
-}
+                OutlinedTextField(
+                    label = { Text("Заправлено СУГ, л") },
+                    value =  azsLpg,
+                    onValueChange = { viewModel.updateAzsLpg(it) },
+                    singleLine = true,
+                    leadingIcon = {
+                        Icon(
+                            Icons.Default.LocalGasStation,
+                            contentDescription = "Редактировать"
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                )
+            }
+        }
 
 // Чекбокс "2% (зимняя норма заводки)"
-Row(verticalAlignment = Alignment.CenterVertically) {
-Checkbox(
-checked = shiftData.cbx2Percent,
-onCheckedChange = { viewModel.updateCheckbox("cbx2Percent", it) }
-)
-Text("2% (зимняя норма заводки)")
-}
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(
+                checked = cbx2Percent,
+                onCheckedChange = { viewModel.updateCbx2Percent(it) }
+            )
+            Text("2% (зимняя норма заводки)")
+        }
+
+        // Чекбокс "4% (зимняя норма заводки)"
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(
+                checked = cbx4Percent,
+                onCheckedChange = { viewModel.updateCbx4Percent(it) }
+            )
+            Text("4% (зимняя норма заводки)")
+        }
 
 // Чекбокс "Коэффициент 1,04 (зимний коэффициент расхода СУГ)"
-Row(verticalAlignment = Alignment.CenterVertically) {
-Checkbox(
-checked = shiftData.cbxCoefficient104,
-onCheckedChange = {
-viewModel.updateCheckbox("cbxCoefficient104", it)
-if (it) viewModel.updateCheckbox("cbxCoefficient108", false)
-}
-)
-Text("Коэффициент 1,04 (зимний коэффициент расхода СУГ)")
-}
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(
+                checked = cbxCoefficient104,
+                onCheckedChange = {
+                    viewModel.updateCbxCoefficient104(it)
+                }
+            )
+            Text("Коэффициент 1,04 (зимний коэффициент расхода СУГ)")
+        }
 
 // Чекбокс "Коэффициент 1,08 (зимний коэффициент расхода СУГ)"
-Row(verticalAlignment = Alignment.CenterVertically) {
-Checkbox(
-checked = shiftData.cbxCoefficient108,
-onCheckedChange = {
-viewModel.updateCheckbox("cbxCoefficient108", it)
-if (it) viewModel.updateCheckbox("cbxCoefficient104", false)
-}
-)
-Text("Коэффициент 1,08 (зимний коэффициент расхода СУГ)")
-}
-}
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(
+                checked = cbxCoefficient108,
+                onCheckedChange = {
+                    viewModel.updateCbxCoefficient108(it)
+                }
+            )
+            Text("Коэффициент 1,08 (зимний коэффициент расхода СУГ)")
+        }
+    }
 }
 
- */
 
 @Composable
 fun PreviousWorkShiftData(viewModel: RecordViewModel) {
