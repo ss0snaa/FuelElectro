@@ -99,6 +99,7 @@ fun ShiftDataScreen(
                 Text("Заправлено СУГ: ${it.azsLpg} л")
 
                 Text("Использована 2% норма: ${if (it.cbx2Percent) "Да" else "Нет"}")
+                Text("Использована 4% норма: ${if (it.cbx2Percent) "Да" else "Нет"}")
                 Text("Коэффициент 1.04: ${if (it.cbxCoefficient104) "Да" else "Нет"}")
                 Text("Коэффициент 1.08: ${if (it.cbxCoefficient108) "Да" else "Нет"}")
 
